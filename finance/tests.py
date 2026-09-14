@@ -22,6 +22,28 @@ class FinanceTests(TestCase):
         self.assertEqual(add_months(date(2026,1,31),2),date(2026,3,31))
         self.assertEqual(add_months(date(2024,1,31),1),date(2024,2,29))
 
+    def test_sales_registration_without_receivable_access(self):
+        seller=get_user_model().objects.create_user('seller@example.com',password='test')
+        seller.user_permissions.add(*Permission.objects.filter(content_type__app_label='finance',codename__in=['view_sales','add_sales','view_payable']))
+        self.client.force_login(seller)
+        self.assertContains(self.client.get('/vendas/'),'Nova venda')
+        self.assertEqual(self.client.get('/vendas/nova/').status_code,200)
+        result=self.client.post('/vendas/nova/',{'contact':self.contact.pk,'product':self.product.pk,'quantity':1,'unit_price':'100.00','installments':2,'first_due':timezone.localdate().isoformat()})
+        self.assertEqual(result.status_code,302)
+        installments=Entry.objects.filter(kind='receivable')
+        self.assertEqual(installments.count(),2)
+        self.assertEqual(sum(e.amount for e in installments),Decimal('100.00'))
+        entry=installments.first()
+        for url in ['/contas/receivable/','/contas/receivable/nova/',f'/conta/{entry.pk}/',f'/conta/{entry.pk}/baixa/','/lembretes/']:
+            self.assertEqual(self.client.get(url).status_code,403,url)
+        for url in [f'/conta/{entry.pk}/baixa/',f'/conta/{entry.pk}/cancelar/',f'/vendas/{entry.sale_id}/cancelar/']:
+            self.assertEqual(self.client.post(url,{}).status_code,403,url)
+        dashboard=self.client.get('/')
+        self.assertNotContains(dashboard,'A receber no mês')
+        self.assertNotContains(dashboard,'Saldo previsto no mês')
+        self.assertNotContains(dashboard,'Produto teste')
+        self.assertFalse(seller.has_perm('finance.view_receivable'))
+
     def test_installments_sum_exactly(self):
         sale=create_sale({'contact':self.contact,'product':self.product,'quantity':1,'unit_price':Decimal('100.00'),'installments':3,'first_due':date(2026,1,31)},self.admin)
         entries=list(Entry.objects.filter(sale=sale))

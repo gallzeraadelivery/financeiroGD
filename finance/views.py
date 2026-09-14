@@ -213,11 +213,10 @@ def catalog_delete(request,area,pk):
 
 @require_area('sales')
 def sales(request):
-    return render(request,'sales.html',{'title':'Vendas parceladas','sales':Sale.objects.select_related('contact')[:200],'can_add':allowed(request.user,'sales','add') and allowed(request.user,'receivable','add'),'can_delete':allowed(request.user,'sales','delete') and allowed(request.user,'receivable','delete')})
+    return render(request,'sales.html',{'title':'Vendas parceladas','sales':Sale.objects.select_related('contact')[:200],'can_add':allowed(request.user,'sales','add'),'can_delete':allowed(request.user,'sales','delete') and allowed(request.user,'receivable','delete')})
 
 @require_area('sales','add')
 def sale_new(request):
-    if not allowed(request.user,'receivable','add'): raise PermissionDenied
     form=SaleForm(request.POST or None,initial={'first_due':timezone.localdate()})
     if request.method=='POST' and form.is_valid():
         try:

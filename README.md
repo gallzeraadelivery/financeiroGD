@@ -10,7 +10,7 @@ Aplicação de contas a pagar e receber, publicada em https://financeiro.gdapps.
 - Baixas parciais, validação do saldo e proteção contra reenvio da mesma baixa.
 - Produtos, clientes e fornecedores; arquivamento preservando histórico.
 - Vendas com até 120 parcelas mensais. O resto em centavos é distribuído nas primeiras parcelas.
-- Permissões por área e ação, verificadas no servidor. Criar vendas exige também cadastrar contas a receber; cancelar exige as duas permissões de cancelamento.
+- Permissões por área e ação, verificadas no servidor. Cadastrar vendas permite gerar as parcelas automaticamente sem liberar consulta, cadastro direto ou baixa em contas a receber. Cancelar vendas exige as duas permissões de cancelamento (vendas e contas a receber).
 - Resumo diário pelo WhatsApp, destinado somente ao número configurado pelo administrador. Clientes nunca são destinatários nesta versão.
 - Registro de alterações e de envios. Uma tentativa por dia evita duplicação em respostas ambíguas da API.
 
