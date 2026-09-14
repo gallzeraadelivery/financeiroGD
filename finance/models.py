@@ -119,3 +119,11 @@ class LoginAttempt(models.Model):
     key = models.CharField(max_length=64, unique=True)
     count = models.PositiveIntegerField(default=0)
     since = models.DateTimeField(default=timezone.now)
+
+class ImportedPayable(models.Model):
+    source_key = models.CharField(max_length=64, unique=True)
+    entry = models.OneToOneField(Entry, on_delete=models.PROTECT, related_name='import_origin')
+    source_file = models.CharField(max_length=255)
+    source_row = models.PositiveIntegerField()
+    original = models.JSONField()
+    imported_at = models.DateTimeField(auto_now_add=True)

@@ -64,3 +64,13 @@ O comando `bootstrap_admin --password-file /caminho/privado` cria o administrado
 - Catálogos e vendas mostram até 200 registros; histórico mostra 150 atividades. Contas possuem paginação de 30 itens.
 
 Referências: [segurança do Django](https://docs.djangoproject.com/en/5.2/topics/security/) e [Evolution API](https://github.com/EvolutionAPI/evolution-api).
+
+## Importação de contas a pagar
+
+`scripts/prepare_payables.py origem.xlsx destino.json` lê uma exportação de uma aba com openpyxl no ambiente de análise. O arquivo original não é alterado. Salve o JSON em `.private/`; planilhas e dados financeiros não devem entrar no GitHub.
+
+`python manage.py import_payables arquivo.json --user email-do-admin` faz a simulação. Acrescente `--apply` para gravar após conferir os totais e executar um backup. A gravação é transacional: uma inconsistência desfaz o lote inteiro.
+
+Contas `Confirmado` entram quitadas com a data de confirmação e um registro de baixa histórica. Contas `Atrasado` entram abertas. O valor da conta é o valor total líquido da exportação; descontos, juros, taxas, método de pagamento, competência e demais metadados são preservados nas observações e no registro original de importação. Nenhuma recorrência futura é inferida a partir de repetições históricas.
+
+Cada registro recebe identificação da origem para impedir reimportação. Alterações em um registro já importado exigem revisão. Contas com mesma descrição e vencimento são sinalizadas nas observações; não são descartadas automaticamente quando possuem valores e identificações distintos.
