@@ -7,7 +7,7 @@ from finance.models import NotificationSettings
 class Command(BaseCommand):
     def add_arguments(self,parser): parser.add_argument('--password-file',required=True)
     def handle(self,*args,**options):
-        email='dimymgalvan@gmail.com'
+        email='dimmygalvan@gmail.com'
         if not get_user_model().objects.filter(username=email).exists():
             password=secrets.token_urlsafe(18)
             get_user_model().objects.create_superuser(email,email,password,first_name='Dimym')

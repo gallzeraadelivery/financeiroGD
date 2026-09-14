@@ -7,7 +7,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('https://financeiro.gdapps.online/login/',{waitUntil:'networkidle'});
   await page.screenshot({path:'.private/login.png',fullPage:true});
-  await page.locator('#email').fill('dimymgalvan@gmail.com');
+  await page.locator('#email').fill('dimmygalvan@gmail.com');
   await page.locator('#password').fill(fs.readFileSync('.private/initial-password','utf8').trim());
   await page.getByRole('button',{name:'Entrar na minha conta'}).click();
   await page.waitForURL('https://financeiro.gdapps.online/');
