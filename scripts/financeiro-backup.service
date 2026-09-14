@@ -1,0 +1,6 @@
+[Unit]
+Description=Backup do banco Financeiro GD
+After=docker.service
+[Service]
+Type=oneshot
+ExecStart=/bin/sh /opt/financeiro-gd/scripts/backup.sh

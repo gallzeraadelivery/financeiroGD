@@ -1,0 +1,7 @@
+[Unit]
+Description=Backup diario do Financeiro GD
+[Timer]
+OnCalendar=*-*-* 07:00:00 UTC
+Persistent=true
+[Install]
+WantedBy=timers.target

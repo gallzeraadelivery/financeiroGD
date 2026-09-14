@@ -1,0 +1,10 @@
+.git
+.venv
+.env*
+.private
+db.sqlite3
+__pycache__
+staticfiles
+*.tar.gz
+.initial-password
+backups
